@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Логопедические инструменты — для занятий с детьми</title>
+
+<style>
+:root {
+  --color-bg:        #faf7ff;
+  --color-primary:   #7c3aed;
+  --color-primary-h: #6d28d9;
+  --color-text:      #1e293b;
+  --color-muted:     #64748b;
+  --color-card:      #ffffff;
+  --color-border:    #e9e3f5;
+  --font-main:       'Segoe UI', Tahoma, sans-serif;
+  --radius:          16px;
+  --radius-sm:       8px;
+  --card-border-width: 1px;
+  --card-border-color: #e9e3f5;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-main);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.header { padding: 50px 0 30px; text-align: center; }
+.header h1 { font-size: clamp(24px, 4vw, 38px); color: var(--color-primary); margin-bottom: 12px; line-height: 1.2; }
+.header p { font-size: clamp(14px, 2vw, 17px); color: var(--color-muted); max-width: 600px; margin: 0 auto; }
+.controls { margin: 30px 0 25px; display: flex; flex-direction: column; gap: 15px; }
+.search-box { position: relative; max-width: 400px; margin: 0 auto; width: 100%; }
+.search-box input { width: 100%; padding: 12px 45px 12px 18px; border: 2px solid var(--color-border); border-radius: var(--radius-sm); font-size: 15px; font-family: inherit; background: var(--color-card); color: var(--color-text); outline: none; transition: border 0.2s; }
+.search-box input:focus { border-color: var(--color-primary); }
+.search-box::after { content: '🔍'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; pointer-events: none; opacity: 0.6; }
+.filters { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.filter-btn { padding: 9px 18px; border: 2px solid var(--color-border); background: var(--color-card); color: var(--color-text); border-radius: 30px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.2s; }
+.filter-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.filter-btn.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; padding-bottom: 60px; }
+.card { background: var(--color-card); border-radius: var(--radius); overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column; border: var(--card-border-width) solid var(--card-border-color); transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
+.card-preview { width: 100%; aspect-ratio: 16 / 10; background: linear-gradient(135deg, var(--color-border) 0%, var(--color-bg) 100%); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+.card-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-preview .placeholder { font-size: 56px; opacity: 0.8; }
+.card-body { padding: 18px 20px 22px; display: flex; flex-direction: column; flex: 1; }
+.card-category { font-size: 11px; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.card-title { font-size: 18px; font-weight: 700; color: var(--color-text); margin-bottom: 8px; line-height: 1.3; }
+.card-description { font-size: 14px; color: var(--color-muted); flex: 1; margin-bottom: 16px; }
+.card-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; background: var(--color-primary); color: #fff; border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; text-decoration: none; align-self: flex-start; transition: background 0.2s; }
+.card:hover .card-btn { background: var(--color-primary-h); }
+.empty { text-align: center; padding: 60px 20px; color: var(--color-muted); font-size: 16px; }
+.footer { text-align: center; padding: 30px 20px; color: var(--color-muted); font-size: 13px; border-top: 1px solid var(--color-border); }
+.footer a { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+.footer a:hover { text-decoration: underline; }
+
+#editorToggle { position: fixed; top: 20px; right: 20px; z-index: 1000; background: var(--color-primary); color: #fff; border: none; padding: 12px 18px; border-radius: 50px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-family: inherit; transition: transform 0.2s; }
+#editorToggle:hover { transform: scale(1.05); }
+#editorPanel { position: fixed; top: 0; right: -420px; width: 400px; max-width: 100vw; height: 100vh; background: #fff; z-index: 999; box-shadow: -5px 0 30px rgba(0,0,0,0.15); display: flex; flex-direction: column; transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1); font-size: 14px; }
+#editorPanel.open { right: 0; }
+.editor-header { padding: 18px 20px; background: var(--color-primary); color: #fff; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.editor-header h2 { font-size: 16px; margin: 0; }
+.editor-close { background: rgba(255,255,255,0.2); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+.editor-body { flex: 1; overflow-y: auto; padding: 16px; }
+.editor-section { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
+.editor-section:last-child { border-bottom: none; }
+.editor-section h3 { font-size: 12px; text-transform: uppercase; color: #666; margin: 0 0 10px; letter-spacing: 0.5px; font-weight: 700; }
+.field-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.field-row label { flex: 0 0 140px; font-size: 13px; color: #444; font-weight: 600; }
+.field-row input[type="color"] { width: 40px; height: 32px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; padding: 2px; background: #fff; flex-shrink: 0; }
+.field-row select { flex: 1; padding: 6px 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; font-family: inherit; background: #fff; cursor: pointer; }
+.field-row input[type="range"] { flex: 1; accent-color: var(--color-primary); }
+.field-row .value-display { font-size: 12px; color: #666; min-width: 40px; text-align: right; font-weight: 600; }
+.editor-footer { padding: 12px 16px; border-top: 1px solid #eee; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; background: #f9f9f9; }
+.editor-footer button { padding: 10px; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.btn-download-html { background: #10b981; color: #fff; }
+.btn-download-json { background: #dbeafe; color: #1e40af; }
+.btn-upload-json { background: #fef3c7; color: #92400e; position: relative; overflow: hidden; }
+.btn-upload-json input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.btn-reset { background: #fee2e2; color: #991b1b; }
+.editor-footer button:hover { filter: brightness(0.95); }
+
+.cover-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding: 8px; background: #f8f8f8; border-radius: 8px; }
+.cover-item .cover-preview { width: 50px; height: 32px; border-radius: 4px; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 20px; overflow: hidden; flex-shrink: 0; }
+.cover-item .cover-preview img { width: 100%; height: 100%; object-fit: cover; }
+.cover-item .cover-info { flex: 1; min-width: 0; }
+.cover-item .cover-info .name { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333; }
+.cover-item .cover-info .hint { font-size: 11px; color: #999; margin-top: 2px; }
+.cover-item button { padding: 6px 10px; font-size: 11px; border: none; border-radius: 6px; cursor: pointer; background: #e0e7ff; color: #3730a3; font-weight: 700; flex-shrink: 0; }
+.cover-item button:hover { filter: brightness(0.95); }
+
+@media (max-width: 600px) {
+  .header { padding: 30px 0 20px; }
+  .grid { gap: 16px; padding-bottom: 40px; }
+  .card-body { padding: 16px; }
+  #editorToggle { top: 12px; right: 12px; padding: 10px 14px; font-size: 13px; }
+  #editorPanel { width: 100vw; right: -100vw; }
+  .field-row label { flex: 0 0 110px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Кнопка редактора (скрыта, показывается только через ?edit=1 или Ctrl+Shift+E) -->
+<button id="editorToggle" onclick="toggleEditor()" style="display:none;">🎨 Настроить вид</button>
+
+<div id="editorPanel">
+  <div class="editor-header">
+    <h2>🎨 Настройки вида</h2>
+    <button class="editor-close" onclick="toggleEditor()">×</button>
+  </div>
+  <div class="editor-body">
+    <div class="editor-section">
+      <h3>🎨 Цвета</h3>
+      <div class="field-row"><label>Фон страницы</label><input type="color" id="edColorBg"></div>
+      <div class="field-row"><label>Основной цвет</label><input type="color" id="edColorPrimary"></div>
+      <div class="field-row"><label>Цвет текста</label><input type="color" id="edColorText"></div>
+      <div class="field-row"><label>Фон карточек</label><input type="color" id="edColorCard"></div>
+      <div class="field-row"><label>Цвет границ</label><input type="color" id="edColorBorder"></div>
+    </div>
+
+    <div class="editor-section">
+      <h3>🔤 Шрифт</h3>
+      <div class="field-row">
+        <label>Выбор шрифта</label>
+        <select id="edFont"></select>
+      </div>
+    </div>
+
+    <div class="editor-section">
+      <h3>⬜ Рамки карточек</h3>
+      <div class="field-row">
+        <label>Толщина</label>
+        <input type="range" id="edBorderWidth" min="0" max="8" step="1">
+        <span class="value-display" id="edBorderWidthVal">1px</span>
+      </div>
+      <div class="field-row">
+        <label>Цвет рамки</label>
+        <input type="color" id="edCardBorderColor">
+      </div>
+      <div class="field-row">
+        <label>Скругление</label>
+        <input type="range" id="edRadius" min="0" max="30" step="1">
+        <span class="value-display" id="edRadiusVal">16px</span>
+      </div>
+    </div>
+
+    <div class="editor-section">
+      <h3>🖼️ Обложки проектов</h3>
+      <p style="font-size:12px;color:#888;margin-bottom:10px;">Нажми «Сменить», чтобы вставить ссылку или загрузить файл.</p>
+      <div id="coversList"></div>
+    </div>
+  </div>
+  <div class="editor-footer">
+    <button class="btn-download-html" onclick="downloadSite()">🌐 Скачать сайт (.html) — для GitHub</button>
+    <button class="btn-download-json" onclick="downloadSettings()">💾 Скачать настройки (.json)</button>
+    <button class="btn-upload-json">📂 Загрузить настройки (.json)<input type="file" accept=".json" onchange="uploadSettings(event)"></button>
+    <button class="btn-reset" onclick="resetEditor()">↺ Сбросить всё</button>
+  </div>
+</div>
+
+<div class="container">
+  <header class="header">
+    <h1>🎓 Инструменты для занятий с детьми</h1>
+    <p>Интерактивные игры и материалы для логопедов, педагогов и родителей</p>
+  </header>
+  <div class="controls">
+    <div class="search-box"><input type="text" id="searchInput" placeholder="Поиск проекта…"></div>
+    <div class="filters" id="filters"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none;">Ничего не найдено 😔</div>
+</div>
+
+<footer class="footer">
+  Свинина Галина Сергеевна · <a href="https://vk.ru/logika24" target="_blank" rel="noopener">vk.ru/logika24</a>
+</footer>
+
+<script>
+const PROJECTS = [
+  { title: "Конструктор карточек", url: "https://logika26g.github.io/konstruktor-kartochek/", category: "Материалы", description: "Создание карточек для печати с картинками, подписями и рамками.", emoji: "🃏", image: "" },
+  { title: "Карточки для занятий", url: "https://logika26g.github.io/Kartochki-dlya-zanyatiy/", category: "Материалы", description: "Готовые карточки для занятий: колода, сетка, игра «Мемо», озвучка.", emoji: "📚", image: "" },
+  { title: "Раскраска интерактивная", url: "https://logika26g.github.io/raskraska-interaktivnaya/", category: "Творчество", description: "Онлайн-раскраска с кистью, заливкой и пипеткой. 5 сцен.", emoji: "🎨", image: "" }
+];
+
+const DEFAULT_SETTINGS = {
+  colorBg: '#faf7ff',
+  colorPrimary: '#7c3aed',
+  colorText: '#1e293b',
+  colorCard: '#ffffff',
+  colorBorder: '#e9e3f5',
+  font: "'Segoe UI', Tahoma, sans-serif",
+  borderWidth: 1,
+  cardBorderColor: '#e9e3f5',
+  radius: 16,
+  covers: {}
+};
+
+const FONTS = [
+  { name: "Segoe UI (по умолчанию)", value: "'Segoe UI', Tahoma, sans-serif" },
+  { name: "Arial", value: "Arial, sans-serif" },
+  { name: "Georgia (книжный)", value: "Georgia, serif" },
+  { name: "Times New Roman", value: "'Times New Roman', serif" },
+  { name: "Verdana", value: "Verdana, sans-serif" },
+  { name: "Comic Sans MS (детский)", value: "'Comic Sans MS', cursive" },
+  { name: "Trebuchet MS", value: "'Trebuchet MS', sans-serif" },
+  { name: "Courier New (моно)", value: "'Courier New', monospace" }
+];
+
+const STORAGE_KEY = 'logogames_site_settings_v1';
+let settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+let currentCategory = 'all';
+let currentSearch = '';
+
+function loadSettings() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      settings = Object.assign({}, DEFAULT_SETTINGS, parsed);
+      if (!settings.covers) settings.covers = {};
+    }
+  } catch (e) { console.warn(e); }
+}
+
+function saveSettings() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(settings)); }
+  catch (e) { console.warn(e); }
+}
+
+function applySettings() {
+  const root = document.documentElement.style;
+  root.setProperty('--color-bg', settings.colorBg);
+  root.setProperty('--color-primary', settings.colorPrimary);
+  root.setProperty('--color-primary-h', darken(settings.colorPrimary, 15));
+  root.setProperty('--color-text', settings.colorText);
+  root.setProperty('--color-card', settings.colorCard);
+  root.setProperty('--color-border', settings.colorBorder);
+  root.setProperty('--font-main', settings.font);
+  root.setProperty('--radius', settings.radius + 'px');
+  root.setProperty('--radius-sm', Math.round(settings.radius * 0.5) + 'px');
+  root.setProperty('--card-border-width', settings.borderWidth + 'px');
+  root.setProperty('--card-border-color', settings.cardBorderColor);
+}
+
+function darken(hex, percent) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = Math.max(0, (num >> 16) - Math.round(255 * percent / 100));
+  const g = Math.max(0, ((num >> 8) & 0xff) - Math.round(255 * percent / 100));
+  const b = Math.max(0, (num & 0xff) - Math.round(255 * percent / 100));
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function getProjectPreview(p, index) {
+  const custom = settings.covers[index];
+  const img = custom || p.image;
+  if (img) {
+    return `<img src="${escapeHtml(img)}" alt="${escapeHtml(p.title)}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'placeholder\\'>${escapeHtml(p.emoji || '📄')}</div>';" />`;
+  }
+  return `<div class="placeholder">${escapeHtml(p.emoji || '📄')}</div>`;
+}
+
+function getAllCategories() {
+  return ['all', ...new Set(PROJECTS.map(p => p.category).filter(Boolean))];
+}
+
+function renderFilters() {
+  const filters = document.getElementById('filters');
+  filters.innerHTML = getAllCategories().map(cat => {
+    const label = cat === 'all' ? 'Все проекты' : cat;
+    const active = cat === currentCategory ? ' active' : '';
+    return `<button class="filter-btn${active}" data-cat="${escapeHtml(cat)}">${escapeHtml(label)}</button>`;
+  }).join('');
+  filters.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.onclick = () => {
+      currentCategory = btn.dataset.cat;
+      renderFilters();
+      renderGrid();
+    };
+  });
+}
+
+function getFilteredProjects() {
+  return PROJECTS.map((p, i) => Object.assign({}, p, { _index: i })).filter(p => {
+    if (currentCategory !== 'all' && p.category !== currentCategory) return false;
+    if (currentSearch) {
+      const hay = (p.title + ' ' + p.description + ' ' + p.category).toLowerCase();
+      if (!hay.includes(currentSearch.toLowerCase())) return false;
+    }
+    return true;
+  });
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  const list = getFilteredProjects();
+  if (list.length === 0) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = list.map(p => `
+    <div class="card">
+      <a href="${escapeHtml(p.url)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">
+        <div class="card-preview">${getProjectPreview(p, p._index)}</div>
+        <div class="card-body">
+          <div class="card-category">${escapeHtml(p.category || '')}</div>
+          <div class="card-title">${escapeHtml(p.title)}</div>
+          <div class="card-description">${escapeHtml(p.description || '')}</div>
+          <span class="card-btn">Открыть →</span>
+        </div>
+      </a>
+    </div>
+  `).join('');
+}
+
+function toggleEditor() {
+  document.getElementById('editorPanel').classList.toggle('open');
+}
+
+function syncEditorInputs() {
+  document.getElementById('edColorBg').value = settings.colorBg;
+  document.getElementById('edColorPrimary').value = settings.colorPrimary;
+  document.getElementById('edColorText').value = settings.colorText;
+  document.getElementById('edColorCard').value = settings.colorCard;
+  document.getElementById('edColorBorder').value = settings.colorBorder;
+  document.getElementById('edBorderWidth').value = settings.borderWidth;
+  document.getElementById('edBorderWidthVal').textContent = settings.borderWidth + 'px';
+  document.getElementById('edCardBorderColor').value = settings.cardBorderColor;
+  document.getElementById('edRadius').value = settings.radius;
+  document.getElementById('edRadiusVal').textContent = settings.radius + 'px';
+  const sel = document.getElementById('edFont');
+  sel.innerHTML = FONTS.map(f => `<option value="${escapeHtml(f.value)}">${escapeHtml(f.name)}</option>`).join('');
+  sel.value = settings.font;
+}
+
+function renderCoversList() {
+  const list = document.getElementById('coversList');
+  list.innerHTML = PROJECTS.map((p, i) => {
+    const img = settings.covers[i] || p.image;
+    const previewHtml = img ? `<img src="${escapeHtml(img)}">` : escapeHtml(p.emoji || '📄');
+    return `<div class="cover-item">
+      <div class="cover-preview">${previewHtml}</div>
+      <div class="cover-info">
+        <div class="name">${escapeHtml(p.title)}</div>
+        <div class="hint">${img ? 'Картинка задана' : 'Эмодзи (по умолчанию)'}</div>
+      </div>
+      <button onclick="changeCover(${i})">Сменить</button>
+      ${img ? `<button onclick="clearCover(${i})" style="background:#fee2e2;color:#991b1b;">×</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function changeCover(index) {
+  const url = prompt('Вставь ссылку на картинку (URL):\n\nИли нажми ОК с пустым полем, чтобы выбрать файл с компьютера.');
+  if (url === null) return;
+  if (url.trim()) {
+    settings.covers[index] = url.trim();
+    saveSettings(); renderCoversList(); renderGrid();
+    return;
+  }
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*';
+  input.onchange = (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      settings.covers[index] = ev.target.result;
+      saveSettings(); renderCoversList(); renderGrid();
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+
+function clearCover(index) {
+  delete settings.covers[index];
+  saveSettings(); renderCoversList(); renderGrid();
+}
+
+function resetEditor() {
+  if (!confirm('Сбросить все настройки вида к стандартным?')) return;
+  settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+  saveSettings(); applySettings(); syncEditorInputs(); renderCoversList(); renderGrid();
+}
+
+/* ============================================================
+   СОХРАНЕНИЕ В ФАЙЛЫ
+   ============================================================ */
+
+function downloadSettings() {
+  const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'logogames-settings.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function uploadSettings(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      settings = Object.assign({}, DEFAULT_SETTINGS, data);
+      if (!settings.covers) settings.covers = {};
+      saveSettings(); applySettings(); syncEditorInputs(); renderCoversList(); renderGrid();
+      alert('✅ Настройки загружены!');
+    } catch (err) { alert('❌ Ошибка: файл повреждён или не является JSON'); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function downloadSite() {
+  const html = document.documentElement.outerHTML;
+  const newSettingsCode = 'const DEFAULT_SETTINGS = ' + JSON.stringify(settings, null, 2) + ';';
+  const updated = html.replace(
+    /const DEFAULT_SETTINGS = \{[\s\S]*?\};/,
+    newSettingsCode
+  );
+  const fullHtml = '<!DOCTYPE html>\n' + updated;
+  const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'index.html';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  setTimeout(() => {
+    alert('✅ Файл index.html скачан!\n\nТеперь:\n1. Открой GitHub → свой репозиторий\n2. Загрузи этот файл (замени старый index.html)\n3. Через минуту все посетители увидят новый дизайн');
+  }, 500);
+}
+
+/* ============================================================
+   ОБРАБОТЧИКИ РЕДАКТОРА
+   ============================================================ */
+function bindEditor() {
+  const bindColor = (id, key) => {
+    document.getElementById(id).addEventListener('input', (e) => {
+      settings[key] = e.target.value;
+      applySettings(); saveSettings();
+    });
+  };
+  bindColor('edColorBg', 'colorBg');
+  bindColor('edColorPrimary', 'colorPrimary');
+  bindColor('edColorText', 'colorText');
+  bindColor('edColorCard', 'colorCard');
+  bindColor('edColorBorder', 'colorBorder');
+  bindColor('edCardBorderColor', 'cardBorderColor');
+
+  document.getElementById('edFont').addEventListener('change', (e) => {
+    settings.font = e.target.value;
+    applySettings(); saveSettings();
+  });
+
+  document.getElementById('edBorderWidth').addEventListener('input', (e) => {
+    settings.borderWidth = parseInt(e.target.value);
+    document.getElementById('edBorderWidthVal').textContent = settings.borderWidth + 'px';
+    applySettings(); saveSettings();
+  });
+
+  document.getElementById('edRadius').addEventListener('input', (e) => {
+    settings.radius = parseInt(e.target.value);
+    document.getElementById('edRadiusVal').textContent = settings.radius + 'px';
+    applySettings(); saveSettings();
+  });
+}
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  currentSearch = e.target.value.trim();
+  renderGrid();
+});
+
+/* ============================================================
+   СЕКРЕТНЫЙ ВХОД В РЕДАКТОР
+   ============================================================
+   1. Открой сайт с ?edit=1 в адресе — кнопка появится
+      Пример: https://logika26g.github.io/?edit=1
+   2. Или нажми Ctrl+Shift+E на странице — панель выедет
+   ============================================================ */
+
+// Вариант 1: через ?edit=1
+if (new URLSearchParams(location.search).get('edit') === '1') {
+  document.getElementById('editorToggle').style.display = '';
+}
+
+// Вариант 2: через Ctrl+Shift+E
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e' || e.key === 'У' || e.key === 'у')) {
+    e.preventDefault();
+    document.getElementById('editorToggle').style.display = '';
+    toggleEditor();
+  }
+});
+
+// Старт
+loadSettings();
+applySettings();
+syncEditorInputs();
+bindEditor();
+renderCoversList();
+renderFilters();
+renderGrid();
+</script>
+
+</body>
+</html>
