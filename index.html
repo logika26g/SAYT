@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ru" style="--color-bg: #37e1d6; --color-primary: #346489; --color-primary-h: #0e3e63; --color-text: #0e085e; --color-card: #9ff4ad; --color-border: #9d71f4; --font-main: 'Comic Sans MS', cursive; --radius: 28px; --radius-sm: 14px; --card-border-width: 4px; --card-border-color: #d3c2f5;"><head>
+<html lang="ru">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Логопедические инструменты — для занятий с детьми</title>
@@ -139,9 +140,9 @@ body {
 }
 </style>
 </head>
-<body><button id="editorToggle" onclick="toggleEditor()" style="">⚙️ Управление сайтом</button>
+<body><button id="editorToggle" onclick="toggleEditor()" style="display:none;">⚙️ Управление сайтом</button>
 
-<div id="editorPanel" class="open">
+<div id="editorPanel">
   <div class="editor-header">
     <h2>⚙️ Управление сайтом</h2>
     <button class="editor-close" onclick="toggleEditor()">×</button>
@@ -161,7 +162,7 @@ body {
       <h3>🔤 Шрифт</h3>
       <div class="field-row">
         <label>Выбор шрифта</label>
-        <select id="edFont"><option value="'Segoe UI', Tahoma, sans-serif">Segoe UI (по умолчанию)</option><option value="Arial, sans-serif">Arial</option><option value="Georgia, serif">Georgia (книжный)</option><option value="'Times New Roman', serif">Times New Roman</option><option value="Verdana, sans-serif">Verdana</option><option value="'Comic Sans MS', cursive">Comic Sans MS (детский)</option><option value="'Trebuchet MS', sans-serif">Trebuchet MS</option><option value="'Courier New', monospace">Courier New (моно)</option></select>
+        <select id="edFont"></select>
       </div>
     </div>
 
@@ -170,7 +171,7 @@ body {
       <div class="field-row">
         <label>Толщина</label>
         <input type="range" id="edBorderWidth" min="0" max="8" step="1">
-        <span class="value-display" id="edBorderWidthVal">4px</span>
+        <span class="value-display" id="edBorderWidthVal">1px</span>
       </div>
       <div class="field-row">
         <label>Цвет рамки</label>
@@ -179,44 +180,14 @@ body {
       <div class="field-row">
         <label>Скругление</label>
         <input type="range" id="edRadius" min="0" max="30" step="1">
-        <span class="value-display" id="edRadiusVal">28px</span>
+        <span class="value-display" id="edRadiusVal">16px</span>
       </div>
     </div>
 
     <div class="editor-section">
       <h3>📁 Управление проектами</h3>
       <button onclick="addNewProject()" style="width: 100%; background: #10b981; color: #fff; margin-bottom: 10px;">➕ Добавить новый проект</button>
-      <div id="projectsList"><div class="cover-item">
-      <div class="cover-top">
-        <div class="cover-preview">🃏</div>
-        <div class="cover-info">
-          <div class="name">Конструктор карточек</div>
-          <div class="hint">Материалы</div>
-        </div>
-        <button class="btn-url" onclick="editProject('1')">✏️</button>
-        <button class="btn-del" onclick="deleteProject('1')">🗑</button>
-      </div>
-    </div><div class="cover-item">
-      <div class="cover-top">
-        <div class="cover-preview">📚</div>
-        <div class="cover-info">
-          <div class="name">Карточки для занятий</div>
-          <div class="hint">Материалы</div>
-        </div>
-        <button class="btn-url" onclick="editProject('2')">✏️</button>
-        <button class="btn-del" onclick="deleteProject('2')">🗑</button>
-      </div>
-    </div><div class="cover-item">
-      <div class="cover-top">
-        <div class="cover-preview">🎨</div>
-        <div class="cover-info">
-          <div class="name">Раскраска интерактивная</div>
-          <div class="hint">Творчество</div>
-        </div>
-        <button class="btn-url" onclick="editProject('3')">✏️</button>
-        <button class="btn-del" onclick="deleteProject('3')">🗑</button>
-      </div>
-    </div></div>
+      <div id="projectsList"></div>
     </div>
 
   </div>
@@ -248,67 +219,10 @@ body {
         </select>
       </div>
     </div>
-    <div class="filters" id="filters"><button class="filter-btn active" data-cat="all">Все проекты</button><button class="filter-btn" data-cat="Материалы">Материалы</button><button class="filter-btn" data-cat="Творчество">Творчество</button></div>
+    <div class="filters" id="filters"></div>
   </div>
 
-  <div class="grid" id="grid">
-    <div class="card">
-      <button class="btn-fav " onclick="event.preventDefault(); toggleFav('1')" title="В избранное">
-        🤍
-      </button>
-      <a href="https://logika26g.github.io/konstruktor-kartochek/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">
-        <div class="card-preview"><div class="placeholder">🃏</div></div>
-        <div class="card-body">
-          <div class="card-category">Материалы</div>
-          <div class="card-title">Конструктор карточек</div>
-          <div class="card-description">Создание карточек для печати с картинками, подписями и рамками.</div>
-          <div class="card-actions">
-            <span class="card-btn">Открыть →</span>
-            
-            
-          </div>
-        </div>
-      </a>
-    </div>
-  
-    <div class="card">
-      <button class="btn-fav " onclick="event.preventDefault(); toggleFav('2')" title="В избранное">
-        🤍
-      </button>
-      <a href="https://logika26g.github.io/Kartochki-dlya-zanyatiy/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">
-        <div class="card-preview"><div class="placeholder">📚</div></div>
-        <div class="card-body">
-          <div class="card-category">Материалы</div>
-          <div class="card-title">Карточки для занятий</div>
-          <div class="card-description">Готовые карточки для занятий: колода, сетка, игра «Мемо», озвучка.</div>
-          <div class="card-actions">
-            <span class="card-btn">Открыть →</span>
-            
-            
-          </div>
-        </div>
-      </a>
-    </div>
-  
-    <div class="card">
-      <button class="btn-fav " onclick="event.preventDefault(); toggleFav('3')" title="В избранное">
-        🤍
-      </button>
-      <a href="https://logika26g.github.io/raskraska-interaktivnaya/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">
-        <div class="card-preview"><div class="placeholder">🎨</div></div>
-        <div class="card-body">
-          <div class="card-category">Творчество</div>
-          <div class="card-title">Раскраска интерактивная</div>
-          <div class="card-description">Онлайн-раскраска с кистью, заливкой и пипеткой. 5 сцен.</div>
-          <div class="card-actions">
-            <span class="card-btn">Открыть →</span>
-            
-            
-          </div>
-        </div>
-      </a>
-    </div>
-  </div>
+  <div class="grid" id="grid"></div>
   <div class="empty" id="empty" style="display:none;">Ничего не найдено 😔</div>
 </div>
 
@@ -321,59 +235,21 @@ body {
     <button class="close-btn" onclick="closeVideo()">✖</button>
     <h2 id="videoModalTitle">📺 Видео-инструкция</h2>
     <div class="video-box">
-      <iframe id="videoIframe" src="" allow="clipboard-write; autoplay; encrypted-media" allowfullscreen=""></iframe>
+      <iframe id="videoIframe" src="" allow="clipboard-write; autoplay; encrypted-media" allowFullScreen></iframe>
     </div>
   </div>
 </div><script>
 const DEFAULT_PROJECTS = [
-  {
-    "id": "1",
-    "title": "Конструктор карточек",
-    "url": "https://logika26g.github.io/konstruktor-kartochek/",
-    "category": "Материалы",
-    "description": "Создание карточек для печати с картинками, подписями и рамками.",
-    "emoji": "🃏",
-    "image": "",
-    "video": "",
-    "pdf": "",
-    "date": "2024-01-01"
-  },
-  {
-    "id": "2",
-    "title": "Карточки для занятий",
-    "url": "https://logika26g.github.io/Kartochki-dlya-zanyatiy/",
-    "category": "Материалы",
-    "description": "Готовые карточки для занятий: колода, сетка, игра «Мемо», озвучка.",
-    "emoji": "📚",
-    "image": "",
-    "video": "",
-    "pdf": "",
-    "date": "2024-01-02"
-  },
-  {
-    "id": "3",
-    "title": "Раскраска интерактивная",
-    "url": "https://logika26g.github.io/raskraska-interaktivnaya/",
-    "category": "Творчество",
-    "description": "Онлайн-раскраска с кистью, заливкой и пипеткой. 5 сцен.",
-    "emoji": "🎨",
-    "image": "",
-    "video": "",
-    "pdf": "",
-    "date": "2024-01-03"
-  }
+  { id: "1", title: "Конструктор карточек", url: "https://logika26g.github.io/konstruktor-kartochek/", category: "Материалы", description: "Создание карточек для печати с картинками, подписями и рамками.", emoji: "🃏", image: "", video: "", pdf: "", date: "2024-01-01" },
+  { id: "2", title: "Карточки для занятий", url: "https://logika26g.github.io/Kartochki-dlya-zanyatiy/", category: "Материалы", description: "Готовые карточки для занятий: колода, сетка, игра «Мемо», озвучка.", emoji: "📚", image: "", video: "", pdf: "", date: "2024-01-02" },
+  { id: "3", title: "Раскраска интерактивная", url: "https://logika26g.github.io/raskraska-interaktivnaya/", category: "Творчество", description: "Онлайн-раскраска с кистью, заливкой и пипеткой. 5 сцен.", emoji: "🎨", image: "", video: "", pdf: "", date: "2024-01-03" }
 ];
 
 const DEFAULT_SETTINGS = {
-  "colorBg": "#37e1d6",
-  "colorPrimary": "#346489",
-  "colorText": "#0e085e",
-  "colorCard": "#9ff4ad",
-  "colorBorder": "#9d71f4",
-  "font": "'Comic Sans MS', cursive",
-  "borderWidth": 4,
-  "cardBorderColor": "#d3c2f5",
-  "radius": 28
+  colorBg: '#faf7ff', colorPrimary: '#7c3aed', colorText: '#1e293b',
+  colorCard: '#ffffff', colorBorder: '#e9e3f5',
+  font: "'Segoe UI', Tahoma, sans-serif",
+  borderWidth: 1, cardBorderColor: '#e9e3f5', radius: 16
 };
 
 const FONTS = [
@@ -792,5 +668,5 @@ renderFilters();
 renderGrid();
 </script>
 
-
-</body></html>
+</body>
+</html>
